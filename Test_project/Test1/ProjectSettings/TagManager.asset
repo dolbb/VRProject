@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - Wall_Edge
+  - Middle
   - Undefined
   - Undefined
   - Undefined
@@ -34,8 +36,7 @@ TagManager:
   - Undefined
   - Undefined
   - Undefined
-  - Undefined
-  - Undefined
+  - Edge
   layers:
   - Default
   - TransparentFX
