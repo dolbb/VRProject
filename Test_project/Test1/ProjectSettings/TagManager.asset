@@ -3,7 +3,39 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Wall
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
+  - Undefined
   layers:
   - Default
   - TransparentFX

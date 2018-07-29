@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour {
 
+	// Data of current camera point
 	public Vector3 worldPoint;
+	public GameObject curr_game_object;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +25,7 @@ public class CameraScript : MonoBehaviour {
 		if (Physics.Raycast(ray, out hit))
 		{
 			worldPoint = hit.point;
+			curr_game_object = hit.transform.gameObject;
 			return;
 		}
 		worldPoint = Vector3.zero; // Never reaching here
