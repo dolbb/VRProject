@@ -10,13 +10,20 @@ public class EditScript : MonoBehaviour {
 	// Wall data
 	public GameObject wallPrefab;
 	GameObject wall;
+	Vector3 startPosition;
+	Vector3 endPosition;
+
+	// Window data
+	public GameObject windowPrefab;
+	GameObject window;
 
 	// Menu state
 	public enum state {
 		Idle,
 		Create_Wall,
 		Move_Wall,
-		Move_Edge
+		Move_Edge,
+		Add_Window
 	};
 	public state curr_state;
 
@@ -50,23 +57,25 @@ public class EditScript : MonoBehaviour {
 		case state.Move_Edge:
 			Handle_Move_Edge ();
 			break;
+		case state.Add_Window:
+			Handle_Add_Window ();
+			break;
 		}			
 	}
 
 	/// <summary>
 	/// Create wall
-	/// Manipulation is done on tmpWall (to ignore raycast)
 	/// </summary>
 	#region Create_Wall
 	void Handle_Create_Wall()
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			setStart();
+			create_wall();
 		}
 		else if (Input.GetMouseButtonUp(0))
 		{
-			setEnd();
+			setWall();
 		}
 		else
 		{
@@ -75,19 +84,19 @@ public class EditScript : MonoBehaviour {
 		}
 	}
 
-	void setStart()
+	void create_wall()
 	{
 		operating = true;
 
-		// Set start
-		Vector3 startPosition = camScript.worldPoint;
+		// Get startPosition
+		startPosition = camScript.worldPoint;
 		startPosition += new Vector3(0, wallPrefab.transform.Find("Middle").localScale.y/2, 0);	// Align wall to ground
 
 		// Create wall
 		wall = (GameObject)Instantiate(wallPrefab, startPosition, Quaternion.identity);
 	}
 
-	void setEnd()
+	void setWall()
 	{
 		operating = false;
 
@@ -95,9 +104,6 @@ public class EditScript : MonoBehaviour {
 		GameObject start = wall.transform.Find("Start").gameObject;
 		GameObject middle = wall.transform.Find("Middle").gameObject;
 		GameObject end = wall.transform.Find("End").gameObject;
-
-		// Set end
-		end.transform.position = new Vector3(camScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y/2, camScript.worldPoint.z);
 
 		// Restore raycast behavior
 		start.layer = LayerMask.NameToLayer("Default");
@@ -107,36 +113,22 @@ public class EditScript : MonoBehaviour {
 
 	void adjust()
 	{
-		// Get wall params
-		GameObject end = wall.transform.Find("End").gameObject;
+		// Calculate new_end_position
+		endPosition = new Vector3(camScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y/2, camScript.worldPoint.z);
 
-		// Set end
-		end.transform.position = new Vector3(camScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y/2, camScript.worldPoint.z);
+		// Calcualte (new end in relation to start)
+		Vector3 direction = endPosition - startPosition;
+		float distance = Vector3.Distance(startPosition, endPosition);
 
-		// Adjust wall
-		adjustWall();
-	}
-
-	// Adjust Middle according to Start & End
-	void adjustWall()
-	{
-		// Get wall params
-		GameObject start = wall.transform.Find("Start").gameObject;
-		GameObject middle = wall.transform.Find("Middle").gameObject;
-		GameObject end = wall.transform.Find("End").gameObject;
-
-		// Make start & end face each other
-		start.transform.LookAt(end.transform.position);
-		end.transform.LookAt(start.transform.position);
-
-		// Calculate distance between start & end
-		float distance = Vector3.Distance(start.transform.position, end.transform.position);
+		// Get preFab middle length size
+		float prefabz = wallPrefab.transform.Find("Middle").localScale.z;
 
 		// Adjust wall transform
-		middle.transform.position = start.transform.position + distance / 2 * start.transform.forward;
-		middle.transform.rotation = start.transform.rotation;
-		middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, distance);
+		wall.transform.position = startPosition + (direction / 2);
+		wall.transform.rotation = Quaternion.LookRotation(direction);
+		wall.transform.localScale = new Vector3(wall.transform.localScale.x, wall.transform.localScale.y, distance/prefabz);
 	}
+	
 	#endregion
 
 	/// <summary>
@@ -145,7 +137,7 @@ public class EditScript : MonoBehaviour {
 	#region Move_Wall
 	void Handle_Move_Wall()
 	{
-		// Start move wall
+		// Start
 		if (Input.GetMouseButtonDown(0) && camScript.curr_game_object.tag == "Middle")
 		{
 			operating = true;
@@ -161,7 +153,7 @@ public class EditScript : MonoBehaviour {
 			wall.transform.Find("End").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 		}
 
-		// End move
+		// End
 		else if (Input.GetMouseButtonUp(0) && operating)
 		{
 			operating = false;
@@ -170,9 +162,12 @@ public class EditScript : MonoBehaviour {
 			wall.transform.Find("Start").gameObject.layer = LayerMask.NameToLayer("Default");
 			wall.transform.Find("Middle").gameObject.layer = LayerMask.NameToLayer("Default");
 			wall.transform.Find("End").gameObject.layer = LayerMask.NameToLayer("Default");
+
+			// Override global variable
+			wall = null;
 		}
 
-		// During move
+		// During
 		else
 		{
 			if (operating) 
@@ -192,10 +187,13 @@ public class EditScript : MonoBehaviour {
 
 	void Handle_Move_Edge()
 	{
-		// Start move edge
+		// Start
 		if (Input.GetMouseButtonDown(0) && camScript.curr_game_object.tag == "Wall_Edge")
 		{
 			operating = true;
+
+			// Save start data
+			wall = camScript.curr_game_object.transform.parent.gameObject;
 
 			// Save start data
 			GameObject edge = camScript.curr_game_object;
@@ -206,25 +204,29 @@ public class EditScript : MonoBehaviour {
 
 			// Edge should be End
 			if (end.GetInstanceID() != edge.GetInstanceID()){
-				start.transform.position = end.transform.position;
-				end.transform.position = edge.transform.position;
+				startPosition = end.transform.position;
+				end.transform.position = start.transform.position;
+				start.transform.position = startPosition;
 			}
+
+			startPosition = start.transform.position;
 
 			// Ignore raycast while moving
 			start.layer = LayerMask.NameToLayer("Ignore Raycast");
 			middle.layer = LayerMask.NameToLayer("Ignore Raycast");
 			end.layer = LayerMask.NameToLayer("Ignore Raycast");
+
 		}
 
-		// End move edge
+		// End
 		else if (Input.GetMouseButtonUp(0) && operating)
 		{
 			operating = false;
 
-			setEnd ();
+			setWall ();
 		}
 
-		// During move edge
+		// During
 		else
 		{
 			if (operating) 
@@ -236,4 +238,51 @@ public class EditScript : MonoBehaviour {
 	}
 
 	#endregion
+
+	/// <summary>
+	/// Add Window
+	/// </summary>
+	#region Add_Window
+
+	void Handle_Add_Window()
+	{
+		// Hovering over "middle"
+		if (camScript.curr_game_object.tag == "Middle") {
+
+			// Create window
+			if (!window) {
+				window = (GameObject)Instantiate(windowPrefab);
+			}
+
+			// Get middle
+			GameObject middle = camScript.curr_game_object;
+
+			// Adjust window transform
+			window.transform.position = camScript.worldPoint;
+			window.transform.rotation = middle.transform.rotation;
+
+			// Attach to wall
+			if (Input.GetMouseButtonUp(0))
+			{
+				// Restore raycast behavior
+				window.layer = LayerMask.NameToLayer("Default");
+
+				// Save in "Windows" field
+				window.transform.parent = middle.transform.parent.transform.Find("Windows").transform;
+
+				// The window
+				window = null;
+			}
+		}
+		
+		// Not hovering over "middle" 
+		else {
+			// Make the window disappear
+			if (window)
+				Destroy(window);
+			window = null;
+		}
+	}
+	#endregion
+
 }

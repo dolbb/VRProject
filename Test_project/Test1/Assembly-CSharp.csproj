@@ -53,6 +53,8 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraScript.cs" />
      <Compile Include="Assets\Scripts\EditScript.cs" />
+     <None Include="Assets\Shaders\Window.shader" />
+     <None Include="Assets\Shaders\Wall.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

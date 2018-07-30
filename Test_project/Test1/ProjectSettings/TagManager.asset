@@ -7,6 +7,7 @@ TagManager:
   - Wall
   - Wall_Edge
   - Middle
+  - Window
   - Undefined
   - Undefined
   - Undefined
@@ -35,8 +36,6 @@ TagManager:
   - Undefined
   - Undefined
   - Undefined
-  - Undefined
-  - Edge
   layers:
   - Default
   - TransparentFX
