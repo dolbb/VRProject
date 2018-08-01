@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using HTC.UnityPlugin.Vive;
 
-public class EditScript : MonoBehaviour {/*
+public class EditScript : MonoBehaviour {
 	// Cursor data
-	public GameObject mainCamera;
-	CameraScript camScript;
-
-	// Wall data
-	public GameObject wallPrefab;
+	public GameObject controllerData;
+    controllerDataScript controllerDataScript;
+    
+    // Wall data
+    public GameObject wallPrefab;
 	GameObject wall;
 	Vector3 startPosition;
 	Vector3 endPosition;
@@ -37,7 +38,7 @@ public class EditScript : MonoBehaviour {/*
 	// Initialization
 	void Start()
 	{
-		camScript = mainCamera.GetComponent<CameraScript>();
+        controllerDataScript = controllerData.GetComponent<controllerDataScript>();
 		operating = false;
 	}
 
@@ -69,11 +70,11 @@ public class EditScript : MonoBehaviour {/*
 	#region Create_Wall
 	void Handle_Create_Wall()
 	{
-		if (Input.GetMouseButtonDown(0))
+		if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger))
 		{
 			create_wall();
 		}
-		else if (Input.GetMouseButtonUp(0))
+		else if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger))
 		{
 			setWall();
 		}
@@ -89,7 +90,7 @@ public class EditScript : MonoBehaviour {/*
 		operating = true;
 
 		// Get startPosition
-		startPosition = camScript.worldPoint;
+		startPosition = controllerDataScript.worldPoint;
 		startPosition += new Vector3(0, wallPrefab.transform.Find("Middle").localScale.y/2, 0);	// Align wall to ground
 
 		// Create wall
@@ -114,7 +115,7 @@ public class EditScript : MonoBehaviour {/*
 	void adjust()
 	{
 		// Calculate new_end_position
-		endPosition = new Vector3(camScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y/2, camScript.worldPoint.z);
+		endPosition = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y/2, controllerDataScript.worldPoint.z);
 
 		// Calcualte (new end in relation to start)
 		Vector3 direction = endPosition - startPosition;
@@ -138,13 +139,13 @@ public class EditScript : MonoBehaviour {/*
 	void Handle_Move_Wall()
 	{
 		// Start
-		if (Input.GetMouseButtonDown(0) && camScript.curr_game_object.tag == "Middle")
+		if (Input.GetMouseButtonDown(0) && controllerDataScript.curr_game_object.tag == "Middle")
 		{
 			operating = true;
 
 			// Save start data
-			wall = camScript.curr_game_object.transform.parent.gameObject;
-			move_start_cam_pos = camScript.worldPoint;
+			wall = controllerDataScript.curr_game_object.transform.parent.gameObject;
+			move_start_cam_pos = controllerDataScript.worldPoint;
 			move_start_wall_pos = wall.transform.position;
 
 			// Ignore raycast while moving
@@ -172,7 +173,7 @@ public class EditScript : MonoBehaviour {/*
 		{
 			if (operating) 
 			{
-				Vector3 delta = new Vector3(camScript.worldPoint.x - move_start_cam_pos.x,0,camScript.worldPoint.z - move_start_cam_pos.z);
+				Vector3 delta = new Vector3(controllerDataScript.worldPoint.x - move_start_cam_pos.x,0,controllerDataScript.worldPoint.z - move_start_cam_pos.z);
 				wall.transform.position = move_start_wall_pos + delta;
 			}
 				
@@ -188,16 +189,16 @@ public class EditScript : MonoBehaviour {/*
 	void Handle_Move_Edge()
 	{
 		// Start
-		if (Input.GetMouseButtonDown(0) && camScript.curr_game_object.tag == "Wall_Edge")
+		if (Input.GetMouseButtonDown(0) && controllerDataScript.curr_game_object.tag == "Wall_Edge")
 		{
 			operating = true;
 
 			// Save start data
-			wall = camScript.curr_game_object.transform.parent.gameObject;
+			wall = controllerDataScript.curr_game_object.transform.parent.gameObject;
 
 			// Save start data
-			GameObject edge = camScript.curr_game_object;
-			wall = camScript.curr_game_object.transform.parent.gameObject;
+			GameObject edge = controllerDataScript.curr_game_object;
+			wall = controllerDataScript.curr_game_object.transform.parent.gameObject;
 			GameObject start = wall.transform.Find("Start").gameObject;
 			GameObject middle = wall.transform.Find("Middle").gameObject;
 			GameObject end = wall.transform.Find("End").gameObject;
@@ -247,7 +248,7 @@ public class EditScript : MonoBehaviour {/*
 	void Handle_Add_Window()
 	{
 		// Hovering over "middle"
-		if (camScript.curr_game_object.tag == "Middle") {
+		if (controllerDataScript.curr_game_object.tag == "Middle") {
 
 			// Create window
 			if (!window) {
@@ -255,10 +256,10 @@ public class EditScript : MonoBehaviour {/*
 			}
 
 			// Get middle
-			GameObject middle = camScript.curr_game_object;
+			GameObject middle = controllerDataScript.curr_game_object;
 
 			// Adjust window transform
-			window.transform.position = camScript.worldPoint;
+			window.transform.position = controllerDataScript.worldPoint;
 			window.transform.rotation = middle.transform.rotation;
 
 			// Attach to wall
@@ -285,4 +286,4 @@ public class EditScript : MonoBehaviour {/*
 	}
 	#endregion
 
-*/}
+}
