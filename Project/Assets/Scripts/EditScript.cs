@@ -139,7 +139,7 @@ public class EditScript : MonoBehaviour {
 	void Handle_Move_Wall()
 	{
 		// Start
-		if (Input.GetMouseButtonDown(0) && controllerDataScript.curr_game_object.tag == "Middle")
+		if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger) && controllerDataScript.curr_game_object.tag == "Middle")
 		{
 			operating = true;
 
@@ -155,7 +155,7 @@ public class EditScript : MonoBehaviour {
 		}
 
 		// End
-		else if (Input.GetMouseButtonUp(0) && operating)
+		else if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger) && operating)
 		{
 			operating = false;
 
@@ -189,7 +189,7 @@ public class EditScript : MonoBehaviour {
 	void Handle_Move_Edge()
 	{
 		// Start
-		if (Input.GetMouseButtonDown(0) && controllerDataScript.curr_game_object.tag == "Wall_Edge")
+		if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger) && controllerDataScript.curr_game_object.tag == "Wall_Edge")
 		{
 			operating = true;
 
@@ -220,7 +220,7 @@ public class EditScript : MonoBehaviour {
 		}
 
 		// End
-		else if (Input.GetMouseButtonUp(0) && operating)
+		else if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger) && operating)
 		{
 			operating = false;
 
@@ -263,7 +263,7 @@ public class EditScript : MonoBehaviour {
 			window.transform.rotation = middle.transform.rotation;
 
 			// Attach to wall
-			if (Input.GetMouseButtonUp(0))
+			if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger))
 			{
 				// Restore raycast behavior
 				window.layer = LayerMask.NameToLayer("Default");
