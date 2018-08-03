@@ -7,7 +7,10 @@ public class EditScript : MonoBehaviour {
 	// Cursor data
 	public GameObject controllerData;
     controllerDataScript controllerDataScript;
-    
+
+    // Canvas data
+    public GameObject menu_canvas;
+
     // Wall data
     public GameObject wallPrefab;
 	GameObject wall;
@@ -53,10 +56,24 @@ public class EditScript : MonoBehaviour {
 		operating = false;
 	}
 
-	// Update is called once per frame
-	void Update()
+    public void Set_Mode_Move()
+    {
+        curr_mode = Mode.Move;
+    }
+
+    public void Set_Mode_Add()
+    {
+        curr_mode = Mode.Create_Wall;
+    }
+
+    // Update is called once per frame
+    void Update()
 	{
-        if (!operating)
+        if (menu_canvas.activeSelf)
+            curr_state = state.Idle;
+
+        // Translate Mode and pointed object to state
+        if (!menu_canvas.activeSelf && !operating)
         {
             switch (curr_mode)
             {
@@ -78,6 +95,7 @@ public class EditScript : MonoBehaviour {
             }
         }
 
+        // Handle current state
         switch (curr_state)
 		{
 		case state.Idle:
