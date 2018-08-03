@@ -123,8 +123,8 @@ public class EditScript : MonoBehaviour {
 	{
 		if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger))
 		{
-			create_wall();
-		}
+            create_wall();
+        }
 		else if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger))
 		{
 			setWall();
@@ -140,12 +140,40 @@ public class EditScript : MonoBehaviour {
 	{
 		operating = true;
 
-		// Get startPosition
-		startPosition = controllerDataScript.worldPoint;
-		startPosition += new Vector3(0, wallPrefab.transform.Find("Middle").localScale.y/2, 0);	// Align wall to ground
+        // Attach to Wall_Edge
+        if (controllerDataScript.curr_game_object.tag == "Wall_Edge")
+        {
+            // Get attached wall params
+            GameObject wall = controllerDataScript.curr_game_object.transform.parent.gameObject;
+            GameObject start = wall.transform.Find("Start").gameObject;
+            GameObject end = wall.transform.Find("End").gameObject;
 
-		// Create wall
-		wall = (GameObject)Instantiate(wallPrefab, startPosition, Quaternion.identity);
+            // Calcualte 
+            Vector3 direction = end.transform.position - start.transform.position;
+            float distance = wallPrefab.transform.Find("Start").localScale.x / 2;
+
+            startPosition = controllerDataScript.curr_game_object.transform.position;
+
+            // Adjust startpos position
+            if (controllerDataScript.curr_game_object.name == "Start")
+            {
+                startPosition += direction.normalized * distance;
+            }
+            else
+            {
+                startPosition -= direction.normalized * distance;
+            }
+        }
+
+        // No attachment
+        else
+            startPosition = controllerDataScript.worldPoint;
+
+        // Adjust startPosition height
+        startPosition.y = wallPrefab.transform.Find("Middle").localScale.y / 2;
+
+        // Create wall
+        wall = (GameObject)Instantiate(wallPrefab, startPosition, Quaternion.identity);
 	}
 
 	void setWall()
