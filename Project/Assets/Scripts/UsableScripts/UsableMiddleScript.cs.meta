@@ -3,7 +3,12 @@ guid: 2798ba5fca1683e4693361e74e3174fa
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - grabAttachMechanicScript: {instanceID: 0}
+  - secondaryGrabActionScript: {instanceID: 0}
+  - objectHighlighter: {instanceID: 0}
+  - windowPrefab: {fileID: 1022322796322864, guid: 638cb3295bfbbed429460b2142e95845,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

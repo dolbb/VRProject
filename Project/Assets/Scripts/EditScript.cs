@@ -61,16 +61,23 @@ public class EditScript : MonoBehaviour {
         curr_mode = Mode.Move;
     }
 
-    public void Set_Mode_Add()
+    public void Set_Mode_Add_Wall()
     {
         curr_mode = Mode.Create_Wall;
+    }
+
+    public void Set_Mode_Add_Window()
+    {
+        curr_mode = Mode.Add_Window;
     }
 
     // Update is called once per frame
     void Update()
 	{
         if (menu_canvas.activeSelf)
+        {
             curr_state = state.Idle;
+        }
 
         // Translate Mode and pointed object to state
         if (!menu_canvas.activeSelf && !operating)
@@ -110,7 +117,7 @@ public class EditScript : MonoBehaviour {
 			Handle_Move_Edge ();
 			break;
 		case state.Add_Window:
-			Handle_Add_Window ();
+			//Handle_Add_Window ();
 			break;
 		}			
 	}
@@ -150,18 +157,18 @@ public class EditScript : MonoBehaviour {
 
             // Calcualte 
             Vector3 direction = end.transform.position - start.transform.position;
-            float distance = wallPrefab.transform.Find("Start").localScale.x / 2;
+            float wall_width = wall.transform.localScale.x;
 
             startPosition = controllerDataScript.curr_game_object.transform.position;
 
             // Adjust startpos position
             if (controllerDataScript.curr_game_object.name == "Start")
             {
-                startPosition += direction.normalized * distance;
+                startPosition += direction.normalized * wall_width / 2;
             }
             else
             {
-                startPosition -= direction.normalized * distance;
+                startPosition -= direction.normalized * wall_width / 2;
             }
         }
 
@@ -287,7 +294,7 @@ public class EditScript : MonoBehaviour {
 				startPosition = end.transform.position;
 				end.transform.position = start.transform.position;
 				start.transform.position = startPosition;
-			}
+            }
 
 			startPosition = start.transform.position;
 
@@ -336,13 +343,26 @@ public class EditScript : MonoBehaviour {
 
 			// Get middle
 			GameObject middle = controllerDataScript.curr_game_object;
+            GameObject wall = controllerDataScript.curr_game_object.transform.parent.gameObject;
+            GameObject start = wall.transform.Find("Start").gameObject;
 
-			// Adjust window transform
-			window.transform.position = controllerDataScript.worldPoint;
-			window.transform.rotation = middle.transform.rotation;
+            // Get line
+            Vector3 lineVec = controllerDataScript.direction;
+            Vector3 linePoint = controllerDataScript.worldPoint;
+
+            // Get plane
+            Vector3 planeNormal = controllerDataScript.normal;
+            Vector3 planePoint = start.transform.position;
+
+            // Adjust window transform
+            Vector3 intersection = controllerDataScript.worldPoint;
+            LinePlaneIntersection(out intersection, linePoint, lineVec, planeNormal, planePoint);
+            window.transform.position = /*controllerDataScript.worldPoint;//*/ intersection;
+            window.transform.position = controllerDataScript.worldPoint - planeNormal.normalized * wall.transform.localScale.x / 2;
+            window.transform.rotation = middle.transform.rotation;
 
 			// Attach to wall
-			if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger))
+			if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger))
 			{
 				// Restore raycast behavior
 				window.layer = LayerMask.NameToLayer("Default");
@@ -353,7 +373,15 @@ public class EditScript : MonoBehaviour {
 				// The window
 				window = null;
 			}
-		}
+
+            if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Pad))
+            {
+                // Edge case: menu was activated while in "Add_Window" mode
+                if (window)
+                    Destroy(window);
+                window = null;
+            }
+        }
 		
 		// Not hovering over "middle" 
 		else {
@@ -363,6 +391,59 @@ public class EditScript : MonoBehaviour {
 			window = null;
 		}
 	}
-	#endregion
+
+    #endregion
+
+    #region Helpers
+
+    //create a vector of direction "vector" with length "size"
+    public static Vector3 SetVectorLength(Vector3 vector, float size)
+    {
+
+        //normalize the vector
+        Vector3 vectorNormalized = Vector3.Normalize(vector);
+
+        //scale the vector
+        return vectorNormalized *= size;
+    }
+
+
+    //Get the intersection between a line and a plane. 
+    //If the line and plane are not parallel, the function outputs true, otherwise false.
+    public static bool LinePlaneIntersection(out Vector3 intersection, Vector3 linePoint, Vector3 lineVec, Vector3 planeNormal, Vector3 planePoint)
+    {
+
+        float length;
+        float dotNumerator;
+        float dotDenominator;
+        Vector3 vector;
+        intersection = Vector3.zero;
+
+        //calculate the distance between the linePoint and the line-plane intersection point
+        dotNumerator = Vector3.Dot((planePoint - linePoint), planeNormal);
+        dotDenominator = Vector3.Dot(lineVec, planeNormal);
+
+        //line and plane are not parallel
+        if (dotDenominator != 0.0f)
+        {
+            length = dotNumerator / dotDenominator;
+
+            //create a vector from the linePoint to the intersection point
+            vector = SetVectorLength(lineVec, length);
+
+            //get the coordinates of the line-plane intersection point
+            intersection = linePoint + vector;
+
+            return true;
+        }
+
+        //output not valid
+        else
+        {
+            return false;
+        }
+    }
+
+    #endregion
 
 }
