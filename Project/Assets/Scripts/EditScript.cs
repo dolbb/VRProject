@@ -18,18 +18,29 @@ public class EditScript : MonoBehaviour {
 	public GameObject windowPrefab;
 	GameObject window;
 
-	// Menu state
-	public enum state {
+    // Menu state
+    public enum Mode
+    {
+        Idle,
+        Create_Wall,
+        Move,
+        Add_Window
+    };
+    public Mode curr_mode;
+
+    // Internal state
+    public enum state
+    {
 		Idle,
 		Create_Wall,
 		Move_Wall,
 		Move_Edge,
 		Add_Window
 	};
-	public state curr_state;
+	public state curr_state;    // Todo: not public
 
-	// Flag (has operation begun?)
-	bool operating;
+    // Flag (has operation begun?)
+    public bool operating;      // Todo: not public
 
 	// Move data
 	Vector3 move_start_cam_pos;
@@ -45,7 +56,29 @@ public class EditScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update()
 	{
-		switch (curr_state)
+        if (!operating)
+        {
+            switch (curr_mode)
+            {
+                case Mode.Idle:
+                    curr_state = state.Idle;
+                    break;
+                case Mode.Create_Wall:
+                    curr_state = state.Create_Wall;
+                    break;
+                case Mode.Move:
+                    if (controllerDataScript.curr_game_object.tag == "Middle")
+                        curr_state = state.Move_Wall;
+                    else
+                        curr_state = state.Move_Edge;
+                    break;
+                case Mode.Add_Window:
+                    curr_state = state.Add_Window;
+                    break;
+            }
+        }
+
+        switch (curr_state)
 		{
 		case state.Idle:
 			break;
