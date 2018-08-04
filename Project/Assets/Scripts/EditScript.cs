@@ -155,6 +155,8 @@ public class EditScript : MonoBehaviour {
             GameObject start = wall.transform.Find("Start").gameObject;
             GameObject end = wall.transform.Find("End").gameObject;
 
+            startPosition = controllerDataScript.curr_game_object.transform.position;
+            /*
             // Calcualte 
             Vector3 direction = end.transform.position - start.transform.position;
             float wall_width = wall.transform.localScale.x;
@@ -170,6 +172,7 @@ public class EditScript : MonoBehaviour {
             {
                 startPosition -= direction.normalized * wall_width / 2;
             }
+            */
         }
 
         // No attachment
@@ -181,7 +184,8 @@ public class EditScript : MonoBehaviour {
 
         // Create wall
         wall = (GameObject)Instantiate(wallPrefab, startPosition, Quaternion.identity);
-	}
+        wall.transform.Find("Start").gameObject.transform.position = startPosition;
+    }
 
 	void setWall()
 	{
@@ -198,23 +202,37 @@ public class EditScript : MonoBehaviour {
 		end.layer = LayerMask.NameToLayer("Default");
 	}
 
-	void adjust()
+    /// <summary>
+    /// Adjusts wall according to start & end
+    /// </summary>
+    void adjust()
 	{
-		// Calculate new_end_position
-		endPosition = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y/2, controllerDataScript.worldPoint.z);
+        // Get wall params
+        GameObject start = wall.transform.Find("Start").gameObject;
+        GameObject middle = wall.transform.Find("Middle").gameObject;
+        GameObject end = wall.transform.Find("End").gameObject;
+        GameObject wall_Mesh = wall.transform.Find("Wall_Mesh").gameObject;
 
-		// Calcualte (new end in relation to start)
-		Vector3 direction = endPosition - startPosition;
-		float distance = Vector3.Distance(startPosition, endPosition);
+        // start & end
+        end.transform.position = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y / 2, controllerDataScript.worldPoint.z);
+        end.transform.LookAt(start.transform);
+        start.transform.LookAt(end.transform);
 
-		// Get preFab middle length size
-		float prefabz = wallPrefab.transform.Find("Middle").localScale.z;
+		// Calcualte
+		Vector3 direction = end.transform.position - start.transform.position;
+		float middle_length = Vector3.Distance(end.transform.position, start.transform.position) - start.transform.localScale.z;
+        float wall_mesh_length = Vector3.Distance(end.transform.position, start.transform.position) + start.transform.localScale.z;
+        float middle_prefabz = wallPrefab.transform.Find("Middle").localScale.z;
+        float wall_mesh_prefabz = wallPrefab.transform.Find("Wall_Mesh").localScale.z;
 
-		// Adjust wall transform
-		wall.transform.position = startPosition + (direction / 2);
-		wall.transform.rotation = Quaternion.LookRotation(direction);
-		wall.transform.localScale = new Vector3(wall.transform.localScale.x, wall.transform.localScale.y, distance/prefabz);
-	}
+        // middle & wall_mesh
+        middle.transform.position = wall_Mesh.transform.position  = start.transform.position + (direction / 2);
+        middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, middle_length/* / middle_prefabz*/);
+        wall_Mesh.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, wall_mesh_length /*/ wall_mesh_prefabz*/);
+
+        // wall
+        wall.transform.rotation = Quaternion.LookRotation(direction);
+    }
 	
 	#endregion
 

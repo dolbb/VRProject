@@ -5,7 +5,7 @@ using VRTK;
 
 public class UsableScript : VRTK.VRTK_InteractableObject
 {
-    VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter highlighter;
+    public VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter highlighter;
 
     public virtual void Start()
     {
@@ -24,7 +24,7 @@ public class UsableScript : VRTK.VRTK_InteractableObject
         base.StartUsing(currentUsingObject);
 
         // Highlight GameObject
-        highlighter.Highlight(Color.green);
+        //highlighter.Highlight(Color.green);
     }
 
     public override void StopUsing(VRTK_InteractUse previousUsingObject = null, bool resetUsingObjectState = true)
@@ -33,6 +33,6 @@ public class UsableScript : VRTK.VRTK_InteractableObject
         base.StopUsing(previousUsingObject, resetUsingObjectState);
 
         // Unhighlight GameObject
-        highlighter.Unhighlight();
+        //highlighter.Unhighlight();
     }
 }
