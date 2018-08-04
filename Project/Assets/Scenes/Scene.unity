@@ -779,7 +779,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1003, y: -70}
+  m_AnchoredPosition: {x: 996, y: -70}
   m_SizeDelta: {x: 142, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &241706044
@@ -949,7 +949,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controllerData: {fileID: 1444404740}
   menu_canvas: {fileID: 422796971}
-  wallPrefab: {fileID: 1691270152737252, guid: bcf4ac8d150369a479c62c521da01353, type: 2}
+  wallPrefab: {fileID: 1969922151500374, guid: c189db020b1b22c4c9208b62f722eba0, type: 2}
   windowPrefab: {fileID: 1022322796322864, guid: 638cb3295bfbbed429460b2142e95845,
     type: 2}
   curr_mode: 1

@@ -142,7 +142,7 @@ public class UsableWallSectionScript : UsableScript
             window.layer = LayerMask.NameToLayer("Default");
 
             // Save in "Windows" field
-            window.transform.parent = currWallSection.transform.parent.transform.Find("Windows").transform;
+            window.transform.parent = currWallSection.transform.parent.transform.Find("Wall_Mesh").transform.Find("Windows").transform;
 
             // The window
             window = null;
