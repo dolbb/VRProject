@@ -168,7 +168,7 @@ public class EditScript : MonoBehaviour {
             moveData.startPos = controllerDataScript.worldPoint;
 
             // Adjust height
-            moveData.startPos.y = wallPrefab.transform.Find("Middle").localScale.y / 2;
+            moveData.startPos.y = wallPrefab.transform.localScale.y / 2;
         }
 
         // Create wall
@@ -238,7 +238,7 @@ public class EditScript : MonoBehaviour {
 
         // start & end
         moveData.Start.transform.position = moveData.startPos;
-        moveData.End.transform.position = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.Find("Middle").localScale.y / 2, controllerDataScript.worldPoint.z);
+        moveData.End.transform.position = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.localScale.y / 2, controllerDataScript.worldPoint.z);
 
         // Calcualte
         Vector3 direction = moveData.End.transform.position - moveData.Start.transform.position;
