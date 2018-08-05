@@ -190,41 +190,6 @@ public class EditScript : MonoBehaviour {
         moveData.Start.layer = LayerMask.NameToLayer("Default");
 		middle.layer = LayerMask.NameToLayer("Default");
         moveData.End.layer = LayerMask.NameToLayer("Default");
-
-        adjustMiddle();
-    }
-
-
-    /// <summary>
-    /// Adjusts wall according to start & end
-    /// (They should be positioned)
-    /// </summary>
-    void adjustMiddle()
-    {
-        // Get wall params
-        GameObject middle = moveData.Wall.transform.Find("Middle").gameObject;
-        GameObject wall_Mesh = moveData.Wall.transform.Find("Wall_Mesh").gameObject;
-
-        // Calcualte
-        Vector3 direction = moveData.End.transform.position - moveData.Start.transform.position;
-        float middle_length = Vector3.Distance(moveData.End.transform.position, moveData.Start.transform.position) - moveData.Start.transform.localScale.z;
-        float wall_mesh_length = Vector3.Distance(moveData.End.transform.position, moveData.Start.transform.position) + moveData.Start.transform.localScale.z;
-        float middle_prefabz = wallPrefab.transform.Find("Middle").localScale.z;
-        float wall_mesh_prefabz = wallPrefab.transform.Find("Wall_Mesh").localScale.z;
-
-        // middle & wall_mesh
-        middle.transform.position = wall_Mesh.transform.position = moveData.Start.transform.position + (direction / 2);
-        middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, middle_length/* / middle_prefabz*/);
-        wall_Mesh.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, wall_mesh_length /*/ wall_mesh_prefabz*/);
-
-        // wall
-        if (moveData.Start.name == "End")
-            moveData.Wall.transform.rotation = Quaternion.LookRotation(-direction);
-        else
-            moveData.Wall.transform.rotation = Quaternion.LookRotation(direction);
-
-        moveData.End.transform.LookAt(moveData.Start.transform);
-        moveData.Start.transform.LookAt(moveData.End.transform);
     }
 
     /// <summary>
@@ -248,24 +213,19 @@ public class EditScript : MonoBehaviour {
 
         // Calcualte
         Vector3 direction = moveData.End.transform.position - moveData.Start.transform.position;
-        float middle_length = Vector3.Distance(moveData.End.transform.position, moveData.Start.transform.position) - moveData.Start.transform.localScale.z;
-        float wall_mesh_length = Vector3.Distance(moveData.End.transform.position, moveData.Start.transform.position) + moveData.Start.transform.localScale.z;
-        float middle_prefabz = wallPrefab.transform.Find("Middle").localScale.z;
-        float wall_mesh_prefabz = wallPrefab.transform.Find("Wall_Mesh").localScale.z;
+        float middle_length = Vector3.Distance(moveData.End.transform.position, moveData.Start.transform.position) - moveData.Wall.transform.localScale.x;
+        float wall_mesh_length = Vector3.Distance(moveData.End.transform.position, moveData.Start.transform.position) + moveData.Wall.transform.localScale.x;
 
         // middle & wall_mesh
         middle.transform.position = wall_Mesh.transform.position = moveData.Start.transform.position + (direction / 2);
-        middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, middle_length/* / middle_prefabz*/);
-        wall_Mesh.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, wall_mesh_length /*/ wall_mesh_prefabz*/);
+        middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, middle_length);
+        wall_Mesh.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, wall_mesh_length);
 
         // wall
         if (moveData.Start.name == "End")
             moveData.Wall.transform.rotation = Quaternion.LookRotation(-direction);
         else
             moveData.Wall.transform.rotation = Quaternion.LookRotation(direction);
-
-        //moveData.End.transform.LookAt(moveData.Start.transform);
-        //moveData.Start.transform.LookAt(moveData.End.transform);
     }
 	
 	#endregion

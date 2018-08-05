@@ -1033,7 +1033,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controllerData: {fileID: 1444404740}
   menu_canvas: {fileID: 422796971}
-  wallPrefab: {fileID: 1969922151500374, guid: c189db020b1b22c4c9208b62f722eba0, type: 2}
+  wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
   windowPrefab: {fileID: 1022322796322864, guid: 638cb3295bfbbed429460b2142e95845,
     type: 2}
   curr_mode: 1

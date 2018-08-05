@@ -18,12 +18,13 @@ public class UsableEdgeScript : UsableWallSectionScript
 
     public override void StartUsing(VRTK_InteractUse currentUsingObject = null)
     {
+        GetComponent<MeshRenderer>().enabled = true;
         base.StartUsing(currentUsingObject);
 
         if (EditMenuScript.curr_mode == EditScript.Mode.Move || EditMenuScript.curr_state == EditScript.state.Create_Wall)
         {
             // Highlight current edge
-            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<Renderer>().enabled = false;
+            //transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<Renderer>().enabled = false;
             highlighter.Highlight(Color.green);
             GetComponent<MeshRenderer>().material = Unlit_Wall_Highlight;
         }
@@ -42,7 +43,7 @@ public class UsableEdgeScript : UsableWallSectionScript
         if (EditMenuScript.curr_mode == EditScript.Mode.Move || EditMenuScript.curr_state == EditScript.state.Create_Wall)
         {
             // UnHighlight current edge
-            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<Renderer>().enabled = true;
+            //transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<Renderer>().enabled = true;
             highlighter.Unhighlight();
             GetComponent<MeshRenderer>().material = Unlit_Wall;
         }
@@ -51,5 +52,7 @@ public class UsableEdgeScript : UsableWallSectionScript
         {
             UnHighlightWall();
         }
+
+        GetComponent<MeshRenderer>().enabled = false;
     }
 }
