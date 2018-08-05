@@ -236,9 +236,15 @@ public class EditScript : MonoBehaviour {
         GameObject middle = moveData.Wall.transform.Find("Middle").gameObject;
         GameObject wall_Mesh = moveData.Wall.transform.Find("Wall_Mesh").gameObject;
 
-        // start & end
+        // Get start & end
         moveData.Start.transform.position = moveData.startPos;
         moveData.End.transform.position = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.localScale.y / 2, controllerDataScript.worldPoint.z);
+
+        // Attach to Wall_Edge
+        if (controllerDataScript.curr_game_object.tag == "Wall_Edge")
+        {
+            moveData.End.transform.position = controllerDataScript.curr_game_object.transform.position;
+        }
 
         // Calcualte
         Vector3 direction = moveData.End.transform.position - moveData.Start.transform.position;
