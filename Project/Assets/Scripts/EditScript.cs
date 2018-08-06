@@ -173,6 +173,7 @@ public class EditScript : MonoBehaviour {
 
         // Create wall
         moveData.Wall = (GameObject)Instantiate(wallPrefab, moveData.startPos, Quaternion.identity);
+        moveData.Wall.transform.SetParent(GameObject.Find("Model").transform);
 
         // Update moveData
         moveData.Start = moveData.Wall.transform.Find("Start").gameObject;
