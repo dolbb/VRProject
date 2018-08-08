@@ -202,9 +202,27 @@ public class EditScript : MonoBehaviour {
         GameObject middle = moveData.Wall.transform.Find("Middle").gameObject;
         GameObject wall_Mesh = moveData.Wall.transform.Find("Wall_Mesh").gameObject;
 
+        // Calculate endPos
+        Vector3 pointedEndPos = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.localScale.y / 2, controllerDataScript.worldPoint.z);
+        Vector3 endPos;
+
+        float distX = Mathf.Abs(moveData.startPos.x - pointedEndPos.x);
+        float distZ = Mathf.Abs(moveData.startPos.z - pointedEndPos.z);
+
+        // Attach endPos to x or z axis
+        if (distX <= distZ)
+        {
+            endPos = new Vector3(moveData.startPos.x, pointedEndPos.y, pointedEndPos.z);
+        }
+        else
+        {
+            endPos = new Vector3(pointedEndPos.x, pointedEndPos.y, moveData.startPos.z);
+        }
+
+
         // Get start & end
         moveData.Start.transform.position = moveData.startPos;
-        moveData.End.transform.position = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.localScale.y / 2, controllerDataScript.worldPoint.z);
+        moveData.End.transform.position = endPos;
 
         // Attach to Wall_Edge
         if (controllerDataScript.curr_game_object.tag == "Wall_Edge")
