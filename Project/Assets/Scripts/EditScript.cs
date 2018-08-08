@@ -36,7 +36,9 @@ public class EditScript : MonoBehaviour {
 		Create_Wall,
 		Move_Wall,
 		Move_Edge,
-		Add_Window
+        Move_Window,
+        Move_Window_Edge,
+        Add_Window
 	};
 	public state curr_state;    // Todo: not public
 
@@ -99,7 +101,11 @@ public class EditScript : MonoBehaviour {
                 case Mode.Move:
                     if (controllerDataScript.curr_game_object.tag == "Middle")
                         curr_state = state.Move_Wall;
-                    else
+                    else if (controllerDataScript.curr_game_object.tag == "Window_Middle")
+                        curr_state = state.Move_Window;
+                    else if (controllerDataScript.curr_game_object.tag == "Window_Edge")
+                        curr_state = state.Move_Window_Edge;
+                    else 
                         curr_state = state.Move_Edge;
                     break;
                 case Mode.Add_Window:
@@ -119,7 +125,10 @@ public class EditScript : MonoBehaviour {
 		case state.Move_Wall:
 			Handle_Move_Wall ();
 			break;
-		case state.Move_Edge:
+        case state.Move_Window:
+            //Handle_Move_Window();
+            break;
+        case state.Move_Edge:
 			Handle_Move_Edge ();
 			break;
 		case state.Add_Window:

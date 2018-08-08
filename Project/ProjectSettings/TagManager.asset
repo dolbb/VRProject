@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Window
+  - Wall
+  - Wall_Edge
+  - Middle
+  - Window_Edge
+  - Window_Middle
   layers:
   - Default
   - TransparentFX

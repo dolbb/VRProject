@@ -144,6 +144,13 @@ public class UsableWallSectionScript : UsableScript
             // Save in "Windows" field
             window.transform.parent = currWallSection.transform.parent.transform.Find("Wall_Mesh").transform.Find("Windows").transform;
 
+            // Restore raycast behavior
+            window.transform.Find("Window_Middle").gameObject.layer = LayerMask.NameToLayer("Default");
+            window.transform.Find("Frame_1").gameObject.layer = LayerMask.NameToLayer("Default");
+            window.transform.Find("Frame_2").gameObject.layer = LayerMask.NameToLayer("Default");
+            window.transform.Find("Frame_3").gameObject.layer = LayerMask.NameToLayer("Default");
+            window.transform.Find("Frame_4").gameObject.layer = LayerMask.NameToLayer("Default");
+
             // The window
             window = null;
         }

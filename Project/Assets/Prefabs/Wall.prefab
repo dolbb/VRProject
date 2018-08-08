@@ -425,7 +425,7 @@ MonoBehaviour:
   usingState: 0
   highlighter: {fileID: 0}
   EditMenuScript: {fileID: 0}
-  windowPrefab: {fileID: 1022322796322864, guid: 638cb3295bfbbed429460b2142e95845,
+  windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
     type: 2}
   Unlit_Wall_Highlight: {fileID: 2100000, guid: 1fb502605e27ddb4f94ae9fbcef76c10,
     type: 2}
@@ -464,7 +464,7 @@ MonoBehaviour:
   usingState: 0
   highlighter: {fileID: 0}
   EditMenuScript: {fileID: 0}
-  windowPrefab: {fileID: 1022322796322864, guid: 638cb3295bfbbed429460b2142e95845,
+  windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
     type: 2}
   Unlit_Wall_Highlight: {fileID: 2100000, guid: 1fb502605e27ddb4f94ae9fbcef76c10,
     type: 2}
@@ -571,7 +571,7 @@ MonoBehaviour:
   usingState: 0
   highlighter: {fileID: 0}
   EditMenuScript: {fileID: 0}
-  windowPrefab: {fileID: 1022322796322864, guid: 638cb3295bfbbed429460b2142e95845,
+  windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
     type: 2}
   Unlit_Wall_Highlight: {fileID: 2100000, guid: 1fb502605e27ddb4f94ae9fbcef76c10,
     type: 2}
