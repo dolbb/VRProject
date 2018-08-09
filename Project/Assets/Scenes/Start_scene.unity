@@ -4326,6 +4326,58 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1531329148}
   m_CullTransparentMesh: 0
+--- !u!1 &1544256469 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1285772993195694, guid: 86ecfd17d4d4b465e96fb1d940027328,
+    type: 2}
+  m_PrefabInternal: {fileID: 1646248718}
+--- !u!114 &1544256472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1544256469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44e7164c3f4224c46b3d6636fba18b40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+--- !u!114 &1544256473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1544256469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 421daa37201a41b4bb8325bb20e5dae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableWhenIdle: 0
+  allowedNearTouchControllers: 0
+  allowedTouchControllers: 0
+  ignoredColliders: []
+  isGrabbable: 0
+  holdButtonToGrab: 1
+  stayGrabbedOnTeleport: 1
+  validDrop: 1
+  grabOverrideButton: 0
+  allowedGrabControllers: 0
+  grabAttachMechanicScript: {fileID: 0}
+  secondaryGrabActionScript: {fileID: 0}
+  isUsable: 1
+  holdButtonToUse: 1
+  useOnlyIfGrabbed: 0
+  pointerActivatesUseAction: 1
+  useOverrideButton: 0
+  allowedUseControllers: 0
+  objectHighlighter: {fileID: 0}
+  touchHighlightColor: {r: 0, g: 0, b: 0, a: 0}
+  usingState: 0
+  modelname: model.sav
+  Wall_Atlas_01_Green: {fileID: 2100000, guid: dd3e33b77169f48f38937a7e276738bb, type: 2}
+  Wall_Atlas_01_Dif: {fileID: 2100000, guid: c51f5e8208ed0451db29c1a78e780dab, type: 2}
 --- !u!1 &1573390551
 GameObject:
   m_ObjectHideFlags: 0
