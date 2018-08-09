@@ -9,7 +9,8 @@ public class Model : MonoBehaviour {
     // Prefabs
     public GameObject wallPrefab;
 
-    string destination = "C:/Users/netanelgip/Documents/Models/model.sav";
+    string folder = "C:/Users/netanelgip/Documents/Models/";
+    static public string modelName = "model.sav";
 
     // Use this for initialization
     void Start () {
@@ -24,7 +25,7 @@ public class Model : MonoBehaviour {
     public void Save()
     {
         // Get destination
-        //string destination = Application.persistentDataPath + "/model.sav";
+        string destination = folder + modelName;
 
         // Open file (or create if doesn't exist)
         FileStream file;
@@ -99,7 +100,7 @@ public class Model : MonoBehaviour {
     public void Load()
     {
         // Get destination
-        //string destination = Application.persistentDataPath + "/model.sav";
+        string destination = folder + modelName;
 
         // Open file (or create if doesn't exist)
         FileStream file;
