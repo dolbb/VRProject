@@ -108,7 +108,7 @@ public class SaveLoadScript : MonoBehaviour {
         file.Close();
     }
 
-    public void Load()
+    public void Load(GameObject stand = null)
     {
         // Get destination
         string destination = folder + modelName;
@@ -143,7 +143,11 @@ public class SaveLoadScript : MonoBehaviour {
 
             // Create wall
             GameObject Wall = (GameObject)Instantiate(wallPrefab, VecPosition, VecRotation);
-            Wall.transform.SetParent(GameObject.Find("Model").transform);
+
+            if (stand)
+                Wall.transform.SetParent(stand.transform);
+            else
+                Wall.transform.SetParent(GameObject.Find("Model").transform);
 
             // Restore start position
             Wall.transform.Find("Start").transform.position = new Vector3(wallStruct.startTransform.position_x, wallStruct.startTransform.position_y, wallStruct.startTransform.position_z);

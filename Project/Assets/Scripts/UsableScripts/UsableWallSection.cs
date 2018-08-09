@@ -30,11 +30,13 @@ public class UsableWallSectionScript : UsableScript
 
         // Get controllerDataScript
         controllerData = GameObject.Find("Controller_Data");
-        controllerDataScript = controllerData.GetComponent<controllerDataScript>();
+        if (controllerData)
+            controllerDataScript = controllerData.GetComponent<controllerDataScript>();
 
         // Get EditMenuScript
         EditMenu = GameObject.Find("Edit menu");
-        EditMenuScript = EditMenu.GetComponent<EditScript>();
+        if (EditMenu)
+            EditMenuScript = EditMenu.GetComponent<EditScript>();
 
         // Get wallHighlighter
         wallHighlighter = transform.parent.Find("Wall_Mesh").gameObject.GetComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
@@ -45,6 +47,9 @@ public class UsableWallSectionScript : UsableScript
     {
         base.Update();
 
+        if (!EditMenuScript)
+            return;
+
         if (EditMenuScript.curr_state == EditScript.state.Add_Window && window)
         {
             AdjustWindow();
@@ -54,6 +59,9 @@ public class UsableWallSectionScript : UsableScript
     public override void StartUsing(VRTK_InteractUse currentUsingObject = null)
     {
         base.StartUsing(currentUsingObject);
+
+        if (!EditMenuScript)
+            return;
 
         if (EditMenuScript.curr_state == EditScript.state.Add_Window)
         {

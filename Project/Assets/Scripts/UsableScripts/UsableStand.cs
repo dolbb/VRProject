@@ -11,6 +11,7 @@ public class UsableStand : VRTK.VRTK_InteractableObject
     // Load model data
     SaveLoadScript saveLoadScript;
     public string modelname;
+    GameObject Ground;
 
     // Modify color
     public Material Wall_Atlas_01_Green;
@@ -22,6 +23,14 @@ public class UsableStand : VRTK.VRTK_InteractableObject
     {
         // Get script
         saveLoadScript = GetComponent<SaveLoadScript>();
+        
+        Ground = transform.parent.Find("Ground").gameObject;
+        Ground.transform.localScale = new Vector3(2f, 10f, 2f);
+
+        SaveLoadScript.modelName = modelname;
+        saveLoadScript.Load(Ground);
+
+        Ground.transform.localScale = new Vector3(0.2f, 1f, 0.2f);
     }
 
     // Update is called once per frame
