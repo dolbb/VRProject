@@ -29,7 +29,7 @@ public class UsableStand : VRTK.VRTK_InteractableObject
     {
         if (usingActive)
         {
-            if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger))
+            if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger) && modelname!="")
             {
                 // Update model name
                 SaveLoadScript.modelName = modelname;

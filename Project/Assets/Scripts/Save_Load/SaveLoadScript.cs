@@ -10,7 +10,7 @@ public class SaveLoadScript : MonoBehaviour {
     public GameObject wallPrefab;
 
     string folder = "C:/Users/netanelgip/Documents/Models/";
-    static public string modelName = "model.sav";
+    static public string modelName;
 
     // Use this for initialization
     void Start () {
@@ -99,6 +99,9 @@ public class SaveLoadScript : MonoBehaviour {
 
     public void Load()
     {
+        if (modelName == "")
+            return;
+
         // Get destination
         string destination = folder + modelName;
 
