@@ -23,7 +23,7 @@ public class UsableEdgeWindowScript : UsableWindowSectionScript
         if (!EditMenuScript)
             return;
 
-        if (EditMenuScript.curr_mode == EditScript.Mode.Move)
+        if (EditMenuScript.curr_mode == EditScript.Mode.Move || EditMenuScript.curr_mode == EditScript.Mode.Delete)
         {
             // Highlight current edge
             highlighter.Highlight(Color.green);
@@ -39,7 +39,7 @@ public class UsableEdgeWindowScript : UsableWindowSectionScript
         if (!EditMenuScript)
             return;
 
-        if (EditMenuScript.curr_mode == EditScript.Mode.Move)
+        if (EditMenuScript.curr_mode == EditScript.Mode.Move || EditMenuScript.curr_mode == EditScript.Mode.Delete)
         {
             // UnHighlight current edge
             highlighter.Unhighlight();

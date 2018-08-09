@@ -25,7 +25,8 @@ public class EditScript : MonoBehaviour {
         Idle,
         Create_Wall,
         Move,
-        Add_Window
+        Add_Window,
+        Delete
     };
     public Mode curr_mode;
 
@@ -38,8 +39,9 @@ public class EditScript : MonoBehaviour {
 		Move_Edge,
         Move_Window,
         Move_Window_Edge,
-        Add_Window
-	};
+        Add_Window,
+        Delete
+    };
 	public state curr_state;    // Todo: not public
 
     // Flag (has operation begun?)
@@ -95,6 +97,11 @@ public class EditScript : MonoBehaviour {
         curr_mode = Mode.Add_Window;
     }
 
+    public void Set_Mode_Delete()
+    {
+        curr_mode = Mode.Delete;
+    }
+
     // Update is called once per frame
     void Update()
 	{
@@ -127,6 +134,9 @@ public class EditScript : MonoBehaviour {
                 case Mode.Add_Window:
                     curr_state = state.Add_Window;
                     break;
+                case Mode.Delete:
+                    curr_state = state.Delete;
+                    break;
             }
         }
 
@@ -153,7 +163,10 @@ public class EditScript : MonoBehaviour {
 		case state.Add_Window:
 			//Handle_Add_Window ();
 			break;
-		}			
+        case state.Delete:
+            Handle_Delete();
+            break;
+        }			
 	}
 
 	/// <summary>
@@ -574,6 +587,34 @@ public class EditScript : MonoBehaviour {
     }
     #endregion
 
+    /// <summary>
+    /// Move wall
+    /// </summary>
+    #region Move_Window_Edge
+    void Handle_Delete()
+    {
+        // Start
+        if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger))
+        {
+            string tag = controllerDataScript.curr_game_object.tag;
+            
+            // Wall
+            if (tag == "Middle" || tag == "Wall_Edge" || controllerDataScript.curr_game_object.name == "Wall_Mesh")
+            {
+                Destroy(controllerDataScript.curr_game_object.transform.parent.gameObject);
+            }
+
+            // Window
+            if (tag == "Window_Middle" || tag == "Window_Edge" || controllerDataScript.curr_game_object.name == "Window_Mesh")
+            {
+                Destroy(controllerDataScript.curr_game_object.transform.parent.gameObject);
+            }
+
+        }
+    }
+
+    #endregion
+
     #region Helpers
 
     //create a vector of direction "vector" with length "size"
@@ -586,7 +627,6 @@ public class EditScript : MonoBehaviour {
         //scale the vector
         return vectorNormalized *= size;
     }
-
 
     //Get the intersection between a line and a plane. 
     //If the line and plane are not parallel, the function outputs true, otherwise false.
