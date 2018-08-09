@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public class Model : MonoBehaviour {
+public class SaveLoadScript : MonoBehaviour {
     // Prefabs
     public GameObject wallPrefab;
 
