@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.SceneManagement;
 
 public class SaveLoadScript : MonoBehaviour {
     // Prefabs
@@ -22,8 +23,18 @@ public class SaveLoadScript : MonoBehaviour {
 		
 	}
 
+    public void ReturnToStartScene()
+    {
+        // Switch scenes
+        SceneManager.LoadScene("Start_scene");
+    }
+
     public void Save()
     {
+        // Verify valif modelName
+        if (modelName == "")
+            return;
+
         // Get destination
         string destination = folder + modelName;
 
@@ -99,11 +110,14 @@ public class SaveLoadScript : MonoBehaviour {
 
     public void Load()
     {
-        if (modelName == "")
-            return;
-
         // Get destination
         string destination = folder + modelName;
+
+        // Check if destination exists
+        if (!System.IO.File.Exists(destination))
+        {
+            return;
+        }
 
         // Open file (or create if doesn't exist)
         FileStream file;
