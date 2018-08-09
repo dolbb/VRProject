@@ -48,17 +48,33 @@ public class EditScript : MonoBehaviour {
     // Move data
     struct MoveData
     {
+        public Vector3 startPos;
+
+        // Wall
         public GameObject Wall;
         public GameObject Start;
         public GameObject End;
-        public Vector3 startPos;
+
+        // Window
+        public GameObject window;
+        public int frame;
     }
     MoveData moveData;
     Vector3 move_start_cam_pos;
 	Vector3 move_start_wall_pos;
 
-	// Initialization
-	void Start()
+    // Move window data
+    struct MoveWindowData
+    {
+        public GameObject Wall;
+        public GameObject window;
+        public Vector3 startPos;
+
+    }
+    MoveData moveWindowData;
+
+    // Initialization
+    void Start()
 	{
         controllerDataScript = controllerData.GetComponent<controllerDataScript>();
 		operating = false;
@@ -126,9 +142,12 @@ public class EditScript : MonoBehaviour {
 			Handle_Move_Wall ();
 			break;
         case state.Move_Window:
-            //Handle_Move_Window();
+            Handle_Move_Window();
             break;
-        case state.Move_Edge:
+        case state.Move_Window_Edge:
+            Handle_Move_Window_Edge();
+            break;
+            case state.Move_Edge:
 			Handle_Move_Edge ();
 			break;
 		case state.Add_Window:
@@ -372,7 +391,188 @@ public class EditScript : MonoBehaviour {
 		}
 	}
 
-	#endregion
+    #endregion
+
+    /// <summary>
+    /// Move wall
+    /// </summary>
+    #region Move_Window
+    void Handle_Move_Window()
+    {
+        // Start
+        if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger) && controllerDataScript.curr_game_object.tag == "Window_Middle")
+        {
+            operating = true;
+
+            // Create new moveData
+            moveData = new MoveData();
+
+            // Save start data
+            moveData.window = controllerDataScript.curr_game_object.transform.parent.gameObject;
+            moveData.Wall = moveData.window.transform.parent.gameObject;
+            move_start_cam_pos = moveData.window.transform.position;
+
+            // Ignore raycast while moving
+            moveData.window.transform.Find("Window_Middle").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            moveData.window.transform.Find("Frame_1").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            moveData.window.transform.Find("Frame_2").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            moveData.window.transform.Find("Frame_3").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            moveData.window.transform.Find("Frame_4").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+        }
+
+        // End
+        else if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger) && operating)
+        {
+            operating = false;
+
+            // Restore raycast behavior
+            moveData.window.transform.Find("Window_Middle").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_1").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_2").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_3").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_4").gameObject.layer = LayerMask.NameToLayer("Default");
+
+            // Override global variable
+            moveData.window = null;
+            moveData.Wall = null;
+        }
+
+        // During
+        else
+        {
+            if (operating)
+            {
+                Vector3 delta;
+
+                //Vector3 eulerAngles = moveData.Wall.transform.eulerAngles;
+                float rotationY = moveData.Wall.transform.eulerAngles.y;
+
+                if (rotationY == 90f || rotationY == 270f)
+                {
+                    delta = new Vector3(controllerDataScript.worldPoint.x - move_start_cam_pos.x, controllerDataScript.worldPoint.y - move_start_cam_pos.y, 0f);
+                }
+
+                else
+                {
+                    delta = new Vector3(0f, controllerDataScript.worldPoint.y - move_start_cam_pos.y, controllerDataScript.worldPoint.z - move_start_cam_pos.z);
+                }
+
+                moveData.window.transform.position = move_start_cam_pos + delta;
+            }
+
+        }
+    }
+    #endregion
+
+    /// <summary>
+    /// Move wall
+    /// </summary>
+    #region Move_Window_Edge
+    void Handle_Move_Window_Edge()
+    {
+        // Start
+        if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger) && controllerDataScript.curr_game_object.tag == "Window_Edge")
+        {
+            operating = true;
+
+            // Create new moveData
+            moveData = new MoveData();
+
+            // Save start data
+            moveData.window = controllerDataScript.curr_game_object.transform.parent.gameObject;
+            moveData.Wall = moveData.window.transform.parent.gameObject;
+            move_start_cam_pos = moveData.window.transform.position;
+
+            // Ignore raycast while moving
+            //moveData.window.transform.Find("Window_Middle").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            //moveData.window.transform.Find("Frame_1").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            //moveData.window.transform.Find("Frame_2").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            //moveData.window.transform.Find("Frame_3").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            //moveData.window.transform.Find("Frame_4").gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+            switch (controllerDataScript.curr_game_object.name)
+            {
+                case "Frame_1":
+                    moveData.frame = 1;
+                    break;
+                case "Frame_2":
+                    moveData.frame = 2;
+                    break;
+                case "Frame_3":
+                    moveData.frame = 3;
+                    break;
+                case "Frame_4":
+                    moveData.frame = 4;
+                    break;
+            }
+            
+        }
+
+        // End
+        else if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger) && operating)
+        {
+            operating = false;
+
+            // Restore raycast behavior
+            moveData.window.transform.Find("Window_Middle").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_1").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_2").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_3").gameObject.layer = LayerMask.NameToLayer("Default");
+            moveData.window.transform.Find("Frame_4").gameObject.layer = LayerMask.NameToLayer("Default");
+
+            // Override global variable
+            moveData.window = null;
+            moveData.Wall = null;
+        }
+
+        // During
+        else
+        {
+            if (operating)
+            {
+                Vector3 delta;
+
+                //Vector3 eulerAngles = moveData.Wall.transform.eulerAngles;
+                float rotationY = moveData.Wall.transform.eulerAngles.y;
+                float distance;
+
+                // Wall aligned to x axis
+                if (rotationY == 90f || rotationY == 270f)
+                {
+                    if (moveData.frame == 1 || moveData.frame == 3)
+                    {
+                        float sizeY = Mathf.Abs(2 * (controllerDataScript.worldPoint.y - move_start_cam_pos.y));
+                        moveData.window.transform.localScale = new Vector3(moveData.window.transform.localScale.x, sizeY/3, moveData.window.transform.localScale.z);
+                    }
+
+                    else if (moveData.frame == 2 || moveData.frame == 4)
+                    {
+                        float sizeX = Mathf.Abs(2 * (controllerDataScript.worldPoint.x - move_start_cam_pos.x));
+                        moveData.window.transform.localScale = new Vector3(moveData.window.transform.localScale.x, moveData.window.transform.localScale.y, sizeX/4);
+                    }
+                }
+
+                // Wall aligned to z axis
+                else
+                {
+                    if (moveData.frame == 1 || moveData.frame == 3)
+                    {
+                        float sizeY = Mathf.Abs(2 * (controllerDataScript.worldPoint.y - move_start_cam_pos.y));
+                        moveData.window.transform.localScale = new Vector3(moveData.window.transform.localScale.x, sizeY/3, moveData.window.transform.localScale.z);
+                    }
+
+                    else if (moveData.frame == 2 || moveData.frame == 4)
+                    {
+                        float sizeZ = Mathf.Abs(2 * (controllerDataScript.worldPoint.z - move_start_cam_pos.z));
+                        moveData.window.transform.localScale = new Vector3(moveData.window.transform.localScale.x, moveData.window.transform.localScale.y, sizeZ/4);
+                    }
+                }
+            }
+
+        }
+    }
+    #endregion
 
     #region Helpers
 

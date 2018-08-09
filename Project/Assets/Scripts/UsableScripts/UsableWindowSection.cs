@@ -46,6 +46,12 @@ public class UsableWindowSectionScript : UsableScript
     public override void Update()
     {
         base.Update();
+
+        if (!EditMenuScript)
+        {
+            EditMenu = GameObject.Find("Edit menu");
+            EditMenuScript = EditMenu.GetComponent<EditScript>();
+        }
     }
 
     public override void StartUsing(VRTK_InteractUse currentUsingObject = null)
