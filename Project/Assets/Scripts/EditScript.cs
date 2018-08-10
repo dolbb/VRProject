@@ -293,8 +293,8 @@ public class EditScript : MonoBehaviour {
         Vector3 oldMiddlePosition = middle.transform.position;
         middle.transform.position = wall_Mesh.transform.position = moveData.Start.transform.position + (direction / 2);
         middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, middle_length);
-        wall_Mesh.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, wall_mesh_length);
-
+        wall_Mesh.transform.localScale = new Vector3(wallPrefab.transform.Find("Wall_Mesh").localScale.x, middle.transform.localScale.y, wall_mesh_length);
+        
         // Door
         Vector3 displacement = middle.transform.position - oldMiddlePosition;
         

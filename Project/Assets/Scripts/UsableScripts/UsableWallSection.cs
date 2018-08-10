@@ -123,7 +123,7 @@ public class UsableWallSectionScript : UsableScript
     {
         // Disable start,middle,end meshes
         //transform.parent.gameObject.transform.Find("Start").gameObject.GetComponent<Renderer>().enabled = false;
-        transform.parent.gameObject.transform.Find("Middle").gameObject.GetComponent<Renderer>().enabled = false;
+        //transform.parent.gameObject.transform.Find("Middle").gameObject.GetComponent<Renderer>().enabled = false;
         //transform.parent.gameObject.transform.Find("End").gameObject.GetComponent<Renderer>().enabled = false;
 
         // Highlight wall
@@ -136,7 +136,7 @@ public class UsableWallSectionScript : UsableScript
     {
         // Enable start,middle,end meshes
         //transform.parent.gameObject.transform.Find("Start").gameObject.GetComponent<Renderer>().enabled = true;
-        transform.parent.gameObject.transform.Find("Middle").gameObject.GetComponent<Renderer>().enabled = true;
+        //transform.parent.gameObject.transform.Find("Middle").gameObject.GetComponent<Renderer>().enabled = true;
         //transform.parent.gameObject.transform.Find("End").gameObject.GetComponent<Renderer>().enabled = true;
 
         // Unhighlight wall
