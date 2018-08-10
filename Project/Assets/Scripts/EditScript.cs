@@ -490,12 +490,18 @@ public class EditScript : MonoBehaviour {
 
                 if (rotationY == 90f || rotationY == 270f)
                 {
-                    delta = new Vector3(controllerDataScript.worldPoint.x - move_start_cam_pos.x, controllerDataScript.worldPoint.y - move_start_cam_pos.y, 0f);
+                    delta = new Vector3(controllerDataScript.worldPoint.x - move_start_cam_pos.x, 0f, 0f);
                 }
 
                 else
                 {
-                    delta = new Vector3(0f, controllerDataScript.worldPoint.y - move_start_cam_pos.y, controllerDataScript.worldPoint.z - move_start_cam_pos.z);
+                    delta = new Vector3(0f, 0f, controllerDataScript.worldPoint.z - move_start_cam_pos.z);
+                }
+
+                // Looking at "Window" or "Door" ?
+                if(moveData.window.tag == "Window")
+                {
+                    delta += new Vector3(0f, controllerDataScript.worldPoint.y - move_start_cam_pos.y, 0f);
                 }
 
                 moveData.window.transform.position = move_start_cam_pos + delta;
