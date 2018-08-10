@@ -6,11 +6,12 @@ public class LoadModelScript : MonoBehaviour
 {
     SaveLoadScript saveLoadScript;
     bool loaded = false;
+    public string modelName;
 
     // Use this for initialization
     void Start()
     {
-
+        SaveLoadScript.modelName = modelName;
     }
 
     // Update is called once per frame

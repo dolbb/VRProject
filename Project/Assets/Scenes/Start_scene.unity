@@ -1562,6 +1562,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 0}
+  doorPrefab: {fileID: 0}
 --- !u!1001 &426222875
 Prefab:
   m_ObjectHideFlags: 0
@@ -2252,6 +2254,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 0}
+  doorPrefab: {fileID: 0}
 --- !u!1 &708787004
 GameObject:
   m_ObjectHideFlags: 0
@@ -2950,6 +2954,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
+    type: 2}
+  doorPrefab: {fileID: 1489865539662540, guid: 70e316acc95ff2a4c9f1530f59994d9e, type: 2}
 --- !u!1 &1006836308
 GameObject:
   m_ObjectHideFlags: 0
@@ -3223,6 +3230,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
+    type: 2}
+  doorPrefab: {fileID: 1489865539662540, guid: 70e316acc95ff2a4c9f1530f59994d9e, type: 2}
 --- !u!1 &1086282950
 GameObject:
   m_ObjectHideFlags: 0
@@ -4660,6 +4670,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
+    type: 2}
+  doorPrefab: {fileID: 1489865539662540, guid: 70e316acc95ff2a4c9f1530f59994d9e, type: 2}
 --- !u!114 &1544256473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4712,6 +4725,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 0}
+  doorPrefab: {fileID: 0}
 --- !u!1 &1573390551
 GameObject:
   m_ObjectHideFlags: 0
@@ -5720,6 +5735,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
+    type: 2}
+  doorPrefab: {fileID: 1489865539662540, guid: 70e316acc95ff2a4c9f1530f59994d9e, type: 2}
 --- !u!114 &1959599530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6552,6 +6570,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1380884427249438, guid: c195b98277c05d742ae178fdf7053961, type: 2}
+  windowPrefab: {fileID: 0}
+  doorPrefab: {fileID: 0}
 --- !u!1 &2143493450
 GameObject:
   m_ObjectHideFlags: 0
