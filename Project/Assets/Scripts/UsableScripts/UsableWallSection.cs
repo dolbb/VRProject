@@ -18,6 +18,10 @@ public class UsableWallSectionScript : UsableScript
     public GameObject windowPrefab;
     GameObject window;
 
+    // Door data
+    public GameObject doorPrefab;
+    GameObject door;
+
     // Wall highlighter
     VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter wallHighlighter;
 
@@ -54,6 +58,11 @@ public class UsableWallSectionScript : UsableScript
         {
             AdjustWindow();
         }
+
+        else if (EditMenuScript.curr_state == EditScript.state.Add_Door && door)
+        {
+            AdjustDoor();
+        }
     }
 
     public override void StartUsing(VRTK_InteractUse currentUsingObject = null)
@@ -71,6 +80,15 @@ public class UsableWallSectionScript : UsableScript
                 window = (GameObject)Instantiate(windowPrefab);
             }
         }
+
+        else if (EditMenuScript.curr_state == EditScript.state.Add_Door)
+        {
+            // Create window
+            if (!door)
+            {
+                door = (GameObject)Instantiate(doorPrefab);
+            }
+        }
     }
 
     public override void StopUsing(VRTK_InteractUse previousUsingObject = null, bool resetUsingObjectState = true)
@@ -86,6 +104,17 @@ public class UsableWallSectionScript : UsableScript
             }
 
             window = null;
+        }
+
+        else if (EditMenuScript.curr_state == EditScript.state.Add_Door)
+        {
+            if (door)
+            {
+                door.SetActive(false);
+                Destroy(door);
+            }
+
+            door = null;
         }
     }
 
@@ -161,6 +190,57 @@ public class UsableWallSectionScript : UsableScript
 
             // The window
             window = null;
+        }
+    }
+
+
+    public void AdjustDoor()
+    {
+        // Get middle
+        GameObject currWallSection = controllerDataScript.curr_game_object;
+
+        // Edge case: controllerDataScript is called after this script
+        if (!currWallSection)
+            return;
+
+        // Edge case: entering a "Middle" but controllerDataScript.curr_game_object still points to the ground
+        if (currWallSection.tag != "Middle" && currWallSection.tag != "Wall_Edge")
+            return;
+
+        GameObject wall = controllerDataScript.curr_game_object.transform.parent.gameObject;
+        GameObject start = wall.transform.Find("Start").gameObject;
+
+        // Get line
+        Vector3 lineVec = controllerDataScript.direction;
+        Vector3 linePoint = controllerDataScript.worldPoint;
+
+        // Get plane
+        Vector3 planeNormal = controllerDataScript.normal;
+        Vector3 intersection = controllerDataScript.worldPoint;
+
+        // Adjust window transform
+        door.transform.position = intersection - planeNormal.normalized * wall.transform.localScale.x / 2;
+        door.transform.position = new Vector3(door.transform.position.x, door.transform.localScale.y / 2, door.transform.position.z);
+        door.transform.rotation = currWallSection.transform.rotation;
+
+        // Attach to wall
+        if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger))
+        {
+            // Restore raycast behavior
+            door.layer = LayerMask.NameToLayer("Default");
+
+            // Save in "Windows" field
+            door.transform.parent = currWallSection.transform.parent.transform;
+
+            // Restore raycast behavior
+            door.transform.Find("Window_Middle").gameObject.layer = LayerMask.NameToLayer("Default");
+            door.transform.Find("Frame_1").gameObject.layer = LayerMask.NameToLayer("Default");
+            door.transform.Find("Frame_2").gameObject.layer = LayerMask.NameToLayer("Default");
+            door.transform.Find("Frame_3").gameObject.layer = LayerMask.NameToLayer("Default");
+            door.transform.Find("Frame_4").gameObject.layer = LayerMask.NameToLayer("Default");
+
+            // The door
+            door = null;
         }
     }
 }

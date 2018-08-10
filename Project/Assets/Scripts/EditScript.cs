@@ -26,6 +26,7 @@ public class EditScript : MonoBehaviour {
         Create_Wall,
         Move,
         Add_Window,
+        Add_Door,
         Delete
     };
     public Mode curr_mode;
@@ -40,6 +41,7 @@ public class EditScript : MonoBehaviour {
         Move_Window,
         Move_Window_Edge,
         Add_Window,
+        Add_Door,
         Delete
     };
 	public state curr_state;    // Todo: not public
@@ -97,6 +99,11 @@ public class EditScript : MonoBehaviour {
         curr_mode = Mode.Add_Window;
     }
 
+    public void Set_Mode_Add_Door()
+    {
+        curr_mode = Mode.Add_Door;
+    }
+
     public void Set_Mode_Delete()
     {
         curr_mode = Mode.Delete;
@@ -134,6 +141,9 @@ public class EditScript : MonoBehaviour {
                 case Mode.Add_Window:
                     curr_state = state.Add_Window;
                     break;
+                case Mode.Add_Door:
+                    curr_state = state.Add_Door;
+                    break;
                 case Mode.Delete:
                     curr_state = state.Delete;
                     break;
@@ -163,7 +173,10 @@ public class EditScript : MonoBehaviour {
 		case state.Add_Window:
 			//Handle_Add_Window ();
 			break;
-        case state.Delete:
+        case state.Add_Door:
+            //Handle_Add_Door ();
+            break;
+            case state.Delete:
             Handle_Delete();
             break;
         }			
@@ -277,9 +290,23 @@ public class EditScript : MonoBehaviour {
         float wall_mesh_length = Vector3.Distance(moveData.End.transform.position, moveData.Start.transform.position) + moveData.Wall.transform.localScale.x;
 
         // middle & wall_mesh
+        Vector3 oldMiddlePosition = middle.transform.position;
         middle.transform.position = wall_Mesh.transform.position = moveData.Start.transform.position + (direction / 2);
         middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, middle_length);
         wall_Mesh.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, wall_mesh_length);
+
+        // Door
+        Vector3 displacement = middle.transform.position - oldMiddlePosition;
+        
+        // Update doors
+        foreach (Transform child in moveData.Wall.transform)
+        {
+            if (child.tag == "Door")
+            {
+                child.transform.position += displacement;
+            }
+        }
+
 
         // wall
         if (moveData.Start.name == "End")
@@ -620,7 +647,6 @@ public class EditScript : MonoBehaviour {
     //create a vector of direction "vector" with length "size"
     public static Vector3 SetVectorLength(Vector3 vector, float size)
     {
-
         //normalize the vector
         Vector3 vectorNormalized = Vector3.Normalize(vector);
 
