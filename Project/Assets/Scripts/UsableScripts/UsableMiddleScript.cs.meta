@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 2798ba5fca1683e4693361e74e3174fa
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - grabAttachMechanicScript: {instanceID: 0}
+  - secondaryGrabActionScript: {instanceID: 0}
+  - objectHighlighter: {instanceID: 0}
+  - highlighter: {instanceID: 0}
+  - EditMenuScript: {instanceID: 0}
+  - windowPrefab: {fileID: 1148290023005628, guid: 758e56c59b9ab5e4489d9e686bf1af43,
+      type: 2}
+  - Unlit_Wall_Highlight: {instanceID: 0}
+  - Unlit_Wall: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
