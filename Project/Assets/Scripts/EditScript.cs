@@ -694,18 +694,6 @@ public class EditScript : MonoBehaviour {
 
     #endregion
 
-
-    //linePnt - point the line passes through
-    //lineDir - unit vector in direction of line, either direction works
-    //pnt - the point to find nearest on line for
-    public static Vector3 NearestPointOnLine(Vector3 linePnt, Vector3 lineDir, Vector3 pnt)
-    {
-        lineDir.Normalize();//this needs to be a unit vector
-        Vector3 v = pnt - linePnt;
-        float d = Vector3.Dot(v, lineDir);
-        return linePnt + lineDir * d;
-    }
-
     /// <summary>
     /// Move wall
     /// </summary>
@@ -830,10 +818,6 @@ public class EditScript : MonoBehaviour {
         updatingFloorPlan = true;
     }
 
-    #endregion
-
-
-
     void update_Floor_Plan()
     {
         // Iterate over wallsInFloorPlan
@@ -842,7 +826,7 @@ public class EditScript : MonoBehaviour {
             // Check height
             if (wall.transform.position.y < wallPrefab.transform.localScale.y / 2)
             {
-                wall.transform.position = new Vector3(wall.transform.position .x, wall.transform.position.y + 0.01f, wall.transform.position.z);
+                wall.transform.position = new Vector3(wall.transform.position.x, wall.transform.position.y + 0.01f, wall.transform.position.z);
             }
 
             else if (wall.transform.position.y > wallPrefab.transform.localScale.y / 2)
@@ -853,8 +837,23 @@ public class EditScript : MonoBehaviour {
         }
     }
 
+    #endregion
 
+    /// <summary>
+    /// Helpers
+    /// </summary>
     #region Helpers
+
+    //linePnt - point the line passes through
+    //lineDir - unit vector in direction of line, either direction works
+    //pnt - the point to find nearest on line for
+    public static Vector3 NearestPointOnLine(Vector3 linePnt, Vector3 lineDir, Vector3 pnt)
+    {
+        lineDir.Normalize();//this needs to be a unit vector
+        Vector3 v = pnt - linePnt;
+        float d = Vector3.Dot(v, lineDir);
+        return linePnt + lineDir * d;
+    }
 
     //create a vector of direction "vector" with length "size"
     public static Vector3 SetVectorLength(Vector3 vector, float size)
