@@ -19,6 +19,16 @@ public class EditScript : MonoBehaviour {
 	public GameObject windowPrefab;
 	GameObject window;
 
+    // Floor_Plan data
+    public GameObject panelTop;
+    public GameObject panelDown;
+    public GameObject panelLeft;
+    public GameObject panelRight;
+    List<Vector2> wallCoordinates;
+    public GameObject coordinatePrefab;
+    List<GameObject> wallsInFloorPlan;
+    bool updatingFloorPlan;
+
     // Menu state
     public enum Mode
     {
@@ -27,7 +37,9 @@ public class EditScript : MonoBehaviour {
         Move,
         Add_Window,
         Add_Door,
-        Delete
+        Delete,
+        Get_Floor_Plan,
+        Add_Floor_Plan
     };
     public Mode curr_mode;
 
@@ -42,7 +54,9 @@ public class EditScript : MonoBehaviour {
         Move_Window_Edge,
         Add_Window,
         Add_Door,
-        Delete
+        Delete,
+        Get_Floor_Plan,
+        Add_Floor_Plan
     };
 	public state curr_state;    // Todo: not public
 
@@ -81,7 +95,9 @@ public class EditScript : MonoBehaviour {
     void Start()
 	{
         controllerDataScript = controllerData.GetComponent<controllerDataScript>();
-		operating = false;
+        wallCoordinates = new List<Vector2>();
+        updatingFloorPlan = false;
+        operating = false;
 	}
 
     public void Set_Mode_Move()
@@ -109,10 +125,26 @@ public class EditScript : MonoBehaviour {
         curr_mode = Mode.Delete;
     }
 
+    public void Set_Mode_Get_Floor_Plan()
+    {
+        wallCoordinates = new List<Vector2>();
+        wallsInFloorPlan = new List<GameObject>();
+        curr_mode = Mode.Get_Floor_Plan;
+        curr_state = state.Get_Floor_Plan;
+    }
+
+    public void Set_Mode_Add_Floor_Plan()
+    {
+        curr_mode = Mode.Add_Floor_Plan;
+    }
+
     // Update is called once per frame
     void Update()
 	{
-        if (menu_canvas.activeSelf)
+        if (updatingFloorPlan)
+            update_Floor_Plan();
+
+        if (menu_canvas.activeSelf && curr_mode!=Mode.Get_Floor_Plan)
         {
             curr_state = state.Idle;
         }
@@ -147,6 +179,12 @@ public class EditScript : MonoBehaviour {
                 case Mode.Delete:
                     curr_state = state.Delete;
                     break;
+                case Mode.Get_Floor_Plan:
+                    curr_state = state.Get_Floor_Plan;
+                    break;
+                case Mode.Add_Floor_Plan:
+                    curr_state = state.Add_Floor_Plan;
+                    break;
             }
         }
 
@@ -176,8 +214,14 @@ public class EditScript : MonoBehaviour {
         case state.Add_Door:
             //Handle_Add_Door ();
             break;
-            case state.Delete:
+        case state.Delete:
             Handle_Delete();
+            break;
+        case state.Get_Floor_Plan:
+            Handle_Get_Floor_Plan();
+            break;
+            case state.Add_Floor_Plan:
+            Handle_Add_Floor_Plan();
             break;
         }			
 	}
@@ -250,14 +294,18 @@ public class EditScript : MonoBehaviour {
     /// <summary>
     /// Adjusts wall according to start & end
     /// </summary>
-    void adjust()
+    void adjust(bool adjustHeight = true)
 	{
         // Get wall params
         GameObject middle = moveData.Wall.transform.Find("Middle").gameObject;
         GameObject wall_Mesh = moveData.Wall.transform.Find("Wall_Mesh").gameObject;
 
         // Calculate endPos
-        Vector3 pointedEndPos = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.localScale.y / 2, controllerDataScript.worldPoint.z);
+        Vector3 pointedEndPos;
+        if (adjustHeight)
+            pointedEndPos = new Vector3(controllerDataScript.worldPoint.x, wallPrefab.transform.localScale.y / 2, controllerDataScript.worldPoint.z);
+        else
+            pointedEndPos = controllerDataScript.worldPoint;
         Vector3 endPos;
 
         float distX = Mathf.Abs(moveData.startPos.x - pointedEndPos.x);
@@ -272,7 +320,6 @@ public class EditScript : MonoBehaviour {
         {
             endPos = new Vector3(pointedEndPos.x, pointedEndPos.y, moveData.startPos.z);
         }
-
 
         // Get start & end
         moveData.Start.transform.position = moveData.startPos;
@@ -306,7 +353,6 @@ public class EditScript : MonoBehaviour {
                 child.transform.position += displacement;
             }
         }
-
 
         // wall
         if (moveData.Start.name == "End")
@@ -647,6 +693,166 @@ public class EditScript : MonoBehaviour {
     }
 
     #endregion
+
+
+    //linePnt - point the line passes through
+    //lineDir - unit vector in direction of line, either direction works
+    //pnt - the point to find nearest on line for
+    public static Vector3 NearestPointOnLine(Vector3 linePnt, Vector3 lineDir, Vector3 pnt)
+    {
+        lineDir.Normalize();//this needs to be a unit vector
+        Vector3 v = pnt - linePnt;
+        float d = Vector3.Dot(v, lineDir);
+        return linePnt + lineDir * d;
+    }
+
+    /// <summary>
+    /// Move wall
+    /// </summary>
+    #region Get_Floor_Plan
+    void Handle_Get_Floor_Plan()
+    {
+        // If selected a new coordinate
+        if (ViveInput.GetPressDown(HandRole.RightHand, ControllerButton.Trigger))
+        {
+            float x,z;
+
+            // Get midPoint
+            var xDirection = panelRight.transform.position - panelLeft.transform.position;
+            var midPoint = panelLeft.transform.position + xDirection * 0.5f;
+
+            // Get xModule
+            Vector3 NearestPointOnX = NearestPointOnLine(panelLeft.transform.position, xDirection, controllerDataScript.worldPoint);
+            float xModule = Vector3.Distance(NearestPointOnX, midPoint) / Vector3.Distance(panelLeft.transform.position, panelRight.transform.position);
+
+            // Get X coordinate
+            if (Vector3.Distance(NearestPointOnX, panelLeft.transform.position) < Vector3.Distance(NearestPointOnX, panelRight.transform.position))
+                x = -xModule;
+            else
+                x = xModule;
+
+            // Get zModule
+            Vector3 NearestPointOnZ = NearestPointOnLine(panelDown.transform.position, panelDown.transform.position - panelTop.transform.position, controllerDataScript.worldPoint);
+            float zModule = Vector3.Distance(NearestPointOnZ, midPoint) / Vector3.Distance(panelDown.transform.position, panelTop.transform.position); ;
+
+            // Get Z coordinate
+            if (Vector3.Distance(NearestPointOnZ, panelDown.transform.position) < Vector3.Distance(NearestPointOnZ, panelTop.transform.position))
+                z = -zModule;
+            else
+                z = zModule;
+
+            // Store (x,z)
+            wallCoordinates.Add(new Vector2(x,z));
+
+            // Create a small coordinate
+            GameObject coordinate = (GameObject)Instantiate(coordinatePrefab, controllerDataScript.worldPoint, Quaternion.identity);
+            coordinate.transform.SetParent(GameObject.Find("Coordinates").transform);
+            coordinate.transform.localScale = new Vector3(8f, 8f, 8f);
+        }
+    }
+    #endregion
+
+    /// <summary>
+    /// Add_Floor_Plan
+    /// </summary>
+    #region Add_Floor_Plan
+    void Handle_Add_Floor_Plan()
+    {
+        // Create container for created walls
+        wallsInFloorPlan = new List<GameObject>();
+
+        // Create walls
+        Vector2 startCoordinate = new Vector2(8 * wallCoordinates[0].x, 8 * wallCoordinates[0].y);
+        Vector2 endCoordinate;
+
+        for (int i = 1; i < wallCoordinates.Count-1; i++)
+        {
+            // Get endCoordinate
+            endCoordinate = new Vector2(8 * wallCoordinates[i].x, 8 * wallCoordinates[i].y);
+
+            // Calculate startPos & endPos
+            Vector3 startPos = new Vector3(startCoordinate.x, -wallPrefab.transform.localScale.y / 2, startCoordinate.y);
+            Vector3 endPos = new Vector3(endCoordinate.x, -wallPrefab.transform.localScale.y / 2, endCoordinate.y);
+
+            float distX = Mathf.Abs(startPos.x - endPos.x);
+            float distZ = Mathf.Abs(startPos.z - endPos.z);
+
+            // Attach endPos to x or z axis
+            if (distX <= distZ)
+            {
+                endPos = new Vector3(startPos.x, endPos.y, endPos.z);
+            }
+            else
+            {
+                endPos = new Vector3(endPos.x, endPos.y, startPos.z);
+            }
+
+
+            // Create wall
+            GameObject Wall = (GameObject)Instantiate(wallPrefab, startPos, Quaternion.identity);
+            Wall.transform.SetParent(GameObject.Find("Model").transform);
+            wallsInFloorPlan.Add(Wall);
+
+            // Get wall params
+            GameObject Start = Wall.transform.Find("Start").gameObject;
+            GameObject middle = Wall.transform.Find("Middle").gameObject;
+            GameObject End = Wall.transform.Find("End").gameObject;
+            GameObject wall_Mesh = Wall.transform.Find("Wall_Mesh").gameObject;
+
+            // Calcualte
+            Vector3 direction = endPos - startPos;
+            float middle_length = direction.magnitude - Wall.transform.localScale.x;
+            float wall_mesh_length = direction.magnitude + Wall.transform.localScale.x;
+
+            // Get start & end
+            Start.transform.localPosition = Vector3.zero;
+            End.transform.localPosition = new Vector3 (0f, 0f, direction.magnitude);
+
+            // middle & wall_mesh
+            middle.transform.localPosition = wall_Mesh.transform.localPosition = new Vector3(0f, 0f, direction.magnitude / 2);
+            middle.transform.localScale = new Vector3(middle.transform.localScale.x, middle.transform.localScale.y, middle_length);
+            wall_Mesh.transform.localScale = new Vector3(wallPrefab.transform.Find("Wall_Mesh").localScale.x, middle.transform.localScale.y, wall_mesh_length);
+
+            Wall.transform.rotation = Quaternion.LookRotation(direction);
+
+            ///////////////////////
+
+            startCoordinate = new Vector2 (endPos.x, endPos.z);
+
+            // Restore raycast behavior
+            Start.layer = LayerMask.NameToLayer("Default");
+            middle.layer = LayerMask.NameToLayer("Default");
+            End.layer = LayerMask.NameToLayer("Default");
+        }
+
+        wallCoordinates.Clear();
+        curr_mode = Mode.Idle;
+        updatingFloorPlan = true;
+    }
+
+    #endregion
+
+
+
+    void update_Floor_Plan()
+    {
+        // Iterate over wallsInFloorPlan
+        foreach (GameObject wall in wallsInFloorPlan)
+        {
+            // Check height
+            if (wall.transform.position.y < wallPrefab.transform.localScale.y / 2)
+            {
+                wall.transform.position = new Vector3(wall.transform.position .x, wall.transform.position.y + 0.01f, wall.transform.position.z);
+            }
+
+            else if (wall.transform.position.y > wallPrefab.transform.localScale.y / 2)
+            {
+                wall.transform.position = new Vector3(wall.transform.position.x, wallPrefab.transform.localScale.y / 2, wall.transform.position.z);
+                updatingFloorPlan = false;
+            }
+        }
+    }
+
 
     #region Helpers
 
