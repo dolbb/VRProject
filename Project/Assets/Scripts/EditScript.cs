@@ -675,6 +675,10 @@ public class EditScript : MonoBehaviour {
         // Start
         if (ViveInput.GetPressUp(HandRole.RightHand, ControllerButton.Trigger))
         {
+            // If curr_game_object has been destroyed
+            if (!controllerDataScript.curr_game_object)
+                return;
+
             string tag = controllerDataScript.curr_game_object.tag;
             
             // Wall

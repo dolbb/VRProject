@@ -26,7 +26,11 @@ public class UsableEdgeScript : UsableWallSectionScript
             // Highlight current edge
             //transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<Renderer>().enabled = false;
             highlighter.Highlight(Color.green);
-            GetComponent<MeshRenderer>().material = Unlit_Wall_Highlight;
+
+            if (windowCount > 0)
+                GetComponent<MeshRenderer>().material = Unlit_Wall_Highlight;
+            else
+                GetComponent<MeshRenderer>().material = Wall_Highlight;
         }
 
         else
@@ -45,7 +49,11 @@ public class UsableEdgeScript : UsableWallSectionScript
             // UnHighlight current edge
             //transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<Renderer>().enabled = true;
             highlighter.Unhighlight();
-            GetComponent<MeshRenderer>().material = Unlit_Wall;
+
+            if (windowCount > 0)
+                GetComponent<MeshRenderer>().material = Unlit_Wall;
+            else
+                GetComponent<MeshRenderer>().material = Wall;
         }
 
         else

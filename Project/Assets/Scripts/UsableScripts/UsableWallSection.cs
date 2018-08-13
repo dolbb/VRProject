@@ -27,6 +27,10 @@ public class UsableWallSectionScript : UsableScript
 
     public Material Unlit_Wall_Highlight;
     public Material Unlit_Wall;
+    public Material Wall;
+    public Material Wall_Highlight;
+
+    public int windowCount = 0;
 
     public override void Start()
     {
@@ -128,7 +132,11 @@ public class UsableWallSectionScript : UsableScript
 
         // Highlight wall
         wallHighlighter.Highlight(Color.green);
-        transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall_Highlight;
+        
+        if (windowCount > 0 || EditMenuScript.curr_state == EditScript.state.Add_Window || EditMenuScript.curr_state == EditScript.state.Add_Door)
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall_Highlight;
+        else
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Wall_Highlight;
     }
 
     // Unhighlight entire wall
@@ -141,11 +149,19 @@ public class UsableWallSectionScript : UsableScript
 
         // Unhighlight wall
         wallHighlighter.Unhighlight();
-        transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall;
+
+        if (windowCount > 0)
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall;
+        else
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Wall;
     }
 
     public void AdjustWindow()
     {
+        // Save old material
+        Material oldMaterial = transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material;
+        transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall;
+
         // Get middle
         GameObject currWallSection = controllerDataScript.curr_game_object;
 
@@ -190,12 +206,27 @@ public class UsableWallSectionScript : UsableScript
 
             // The window
             window = null;
+
+            // Increase windowCount
+            windowCount++;
+
+            // Modify material
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall;
+        }
+
+        else
+        {
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = oldMaterial;
         }
     }
 
 
     public void AdjustDoor()
     {
+        // Save old material
+        Material oldMaterial = transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material;
+        transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall;
+
         // Get middle
         GameObject currWallSection = controllerDataScript.curr_game_object;
 
@@ -241,6 +272,17 @@ public class UsableWallSectionScript : UsableScript
 
             // The door
             door = null;
+
+            // Increase windowCount
+            windowCount++;
+
+            // Modify material
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall;
+        }
+
+        else
+        {
+            transform.parent.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = oldMaterial;
         }
     }
 }

@@ -42,6 +42,7 @@ public class UsableStand : VRTK.VRTK_InteractableObject
             {
                 // Update model name
                 SaveLoadScript.modelName = modelname;
+                SaveLoadScript.saveModleName();
 
                 // Switch scenes
                 SceneManager.LoadScene("Edit_scene");

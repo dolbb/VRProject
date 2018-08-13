@@ -12,7 +12,11 @@ public class SaveLoadScript : MonoBehaviour {
     public GameObject windowPrefab;
     public GameObject doorPrefab;
 
-    string folder = "C:/Users/netanelgip/Documents/Models/";
+    // Materials
+    public Material Unlit_Wall_Material;
+    public Material Wall_Material;
+
+    static string folder = "C:/Users/netanelgip/Documents/Models/";
     static public string modelName;
 
     // Use this for initialization
@@ -29,6 +33,56 @@ public class SaveLoadScript : MonoBehaviour {
     {
         // Switch scenes
         SceneManager.LoadScene("Start_scene");
+    }
+
+    static public void saveModleName()
+    {
+        // Get destination
+        string destination = folder + "modelName";
+
+        // Open file (or create if doesn't exist)
+        FileStream file;
+        if (File.Exists(destination))
+            file = File.OpenWrite(destination);
+        else
+            file = File.Create(destination);
+
+        // Create modelData
+        ModelName modelname = new ModelName();
+
+        // Save modelData in file
+        BinaryFormatter bf = new BinaryFormatter();
+        bf.Serialize(file, modelname);
+        file.Close();
+    }
+
+    static public void loadModleName()
+    {
+        // Get destination
+        string destination = folder + "modelName";
+
+        // Check if destination exists
+        if (!System.IO.File.Exists(destination))
+        {
+            return;
+        }
+
+        // Open file (or create if doesn't exist)
+        FileStream file;
+        if (File.Exists(destination))
+            file = File.OpenRead(destination);
+        else
+        {
+            Debug.LogError("File not found");
+            return;
+        }
+
+        // Load modelData from file
+        BinaryFormatter bf = new BinaryFormatter();
+        ModelName modelname = (ModelName)bf.Deserialize(file);
+        file.Close();
+
+        SaveLoadScript.modelName = modelname.modelNum.ToString();
     }
 
     public void Save()
@@ -101,6 +155,13 @@ public class SaveLoadScript : MonoBehaviour {
             wallStruct.wallMeshTransform.scale_x = wall.gameObject.transform.Find("Wall_Mesh").localScale.x;
             wallStruct.wallMeshTransform.scale_y = wall.gameObject.transform.Find("Wall_Mesh").localScale.y;
             wallStruct.wallMeshTransform.scale_z = wall.gameObject.transform.Find("Wall_Mesh").localScale.z;
+
+            // Get meshMaterial
+            string strName = wall.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material.name;
+            if (wall.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material.name == "Unlit_Wall (Instance)")
+                wallStruct.meshMaterial = ModelData.MaterialType.Unlit_Wall;
+            else
+                wallStruct.meshMaterial = ModelData.MaterialType.Wall;
 
             // Windows
             foreach (Transform window in wall.Find("Wall_Mesh").Find("Windows"))
@@ -221,9 +282,13 @@ public class SaveLoadScript : MonoBehaviour {
             // Restore end position
             Wall.transform.Find("End").transform.position = new Vector3(wallStruct.endTransform.position_x, wallStruct.endTransform.position_y, wallStruct.endTransform.position_z);
 
-            // Restore Wall_Mesh position & scale
+            // Restore Wall_Mesh position & scale & material
             Wall.transform.Find("Wall_Mesh").transform.position = new Vector3(wallStruct.wallMeshTransform.position_x, wallStruct.wallMeshTransform.position_y, wallStruct.wallMeshTransform.position_z);
             Wall.transform.Find("Wall_Mesh").transform.localScale = new Vector3(wallStruct.wallMeshTransform.scale_x, wallStruct.wallMeshTransform.scale_y, wallStruct.wallMeshTransform.scale_z);
+            if (wallStruct.meshMaterial == ModelData.MaterialType.Unlit_Wall)
+                Wall.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Unlit_Wall_Material;
+            else
+                Wall.transform.Find("Wall_Mesh").gameObject.GetComponent<MeshRenderer>().material = Wall_Material;
 
             // Windows
             foreach (ModelData.Transform window in wallStruct.windows)
@@ -296,6 +361,13 @@ public class ModelData
     }
 
     [Serializable]
+    public enum MaterialType
+    {
+        Unlit_Wall,
+        Wall
+    }
+
+    [Serializable]
     public struct wallStruct
     {
         // Wall
@@ -304,6 +376,7 @@ public class ModelData
         public Transform middleTransform;
         public Transform endTransform;
         public Transform wallMeshTransform;
+        public MaterialType meshMaterial;
 
         // Windows
         public List<Transform> windows;
@@ -317,5 +390,16 @@ public class ModelData
     public ModelData()
     {
         walls = new List<wallStruct>();
+    }
+}
+
+[Serializable]
+public class ModelName
+{
+    public int modelNum;
+
+    public ModelName()
+    {
+        modelNum = int.Parse(SaveLoadScript.modelName);
     }
 }

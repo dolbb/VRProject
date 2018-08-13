@@ -11,7 +11,7 @@ public class LoadModelScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        SaveLoadScript.modelName = modelName;
+        SaveLoadScript.loadModleName();
     }
 
     // Update is called once per frame

@@ -6953,6 +6953,8 @@ MonoBehaviour:
   windowPrefab: {fileID: 1489865539662540, guid: fef29dc49bb96194f9c362a31cd50f48,
     type: 2}
   doorPrefab: {fileID: 1489865539662540, guid: 70e316acc95ff2a4c9f1530f59994d9e, type: 2}
+  Unlit_Wall_Material: {fileID: 2100000, guid: b0fd7d84d7345cf41b73b0b1b53c271e, type: 2}
+  Wall_Material: {fileID: 2100000, guid: 343b4f86456847e4eade86e5d3c57295, type: 2}
 --- !u!4 &1068720949
 Transform:
   m_ObjectHideFlags: 0
@@ -6977,7 +6979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8375fe7b87c873f4c860d48cb3265696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelName: 1.model
+  modelName: 1
 --- !u!1 &1075021709
 GameObject:
   m_ObjectHideFlags: 0
